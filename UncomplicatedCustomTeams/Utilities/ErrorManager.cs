@@ -206,7 +206,7 @@ namespace UncomplicatedCustomTeams.Utilities
                         return false;
                     }
 
-                    if (team.Roles == null || team.Roles.Count == 0)
+                    if (team.TeamRoles == null || team.TeamRoles.Count == 0)
                     {
                         string message = $"Team {team.Name} (ID: {team.Id}) has no roles defined!";
                         string suggestion = "Define at least one role inside each team using the 'roles:' block.";
@@ -233,8 +233,8 @@ namespace UncomplicatedCustomTeams.Utilities
                         return false;
                     }
 
-                    HashSet<int> roleIds = new();
-                    foreach (var role in team.Roles)
+                    HashSet<uint> roleIds = new();
+                    foreach (var role in team.TeamRoles)
                     {
                         if (string.IsNullOrWhiteSpace(role.Name))
                         {
@@ -245,9 +245,9 @@ namespace UncomplicatedCustomTeams.Utilities
                             return false;
                         }
 
-                        if (!roleIds.Add(role.Id))
+                        if (!roleIds.Add(role.RoleNumericalId))
                         {
-                            string message = $"Duplicate role ID {role.Id} in team {team.Name}!";
+                            string message = $"Duplicate role ID {role.RoleNumericalId} in team {team.Name}!";
                             string suggestion = "Each role ID must be unique within its team.";
                             ErrorManager.Add(filePath, message, suggestion: suggestion);
                             LogManager.Error($"{message}\n {suggestion}");

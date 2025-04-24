@@ -5,6 +5,8 @@ using System.Linq;
 using UncomplicatedCustomTeams.Utilities;
 using UncomplicatedCustomTeams.API.Enums;
 using UnityEngine;
+using UncomplicatedCustomTeams.Interfaces;
+using YamlDotNet.Serialization;
 
 namespace UncomplicatedCustomTeams.API.Features
 {
@@ -102,9 +104,15 @@ namespace UncomplicatedCustomTeams.API.Features
         /// <summary>
         /// The list of every role that will be a part of this wave
         /// </summary>
-        public List<CustomRole> Roles { get; set; } = new()
+        [YamlIgnore]
+        public List<IUCTCustomRole> TeamRoles => Roles.OfType<IUCTCustomRole>().Concat(ExiledRoles).ToList();
+
+        /// <summary>
+        /// The list of every role that will be a part of this wave
+        /// </summary>
+        public List<UncomplicatedCustomRole> Roles { get; set; } = new()
         {
-            new()
+            new UncomplicatedCustomRole()
             {
                 Id = 1,
                 Team = PlayerRoles.Team.ClassD,
@@ -115,7 +123,7 @@ namespace UncomplicatedCustomTeams.API.Features
                 Priority = RolePriority.First,
                 CustomFlags = null,
             },
-            new()
+            new UncomplicatedCustomRole()
             {
                 Id = 2,
                 Team = PlayerRoles.Team.ClassD,
@@ -125,7 +133,20 @@ namespace UncomplicatedCustomTeams.API.Features
                 CustomFlags = null,
                 Priority = RolePriority.Second,
                 MaxPlayers = 1
-            }
+            },
+        };
+
+        /// <summary>
+        /// The list of every role that will be a part of this wave
+        /// </summary>
+        public List<ExiledCustomRole> ExiledRoles { get; set; } = new()
+        {
+            new ExiledCustomRole()
+            {
+                ExiledId = 3,
+                MaxPlayers = 1,
+                Priority = RolePriority.Third,
+            },
         };
 
         public static Team EvaluateSpawn(string wave)

@@ -1,4 +1,5 @@
 ﻿using Exiled.API.Features;
+using Exiled.CustomRoles.API.Features;
 using Exiled.Loader;
 using System;
 using System.Collections.Generic;
@@ -138,14 +139,16 @@ namespace UncomplicatedCustomTeams.Utilities
                             continue;
                         }
 
-                        HashSet<int> usedRoleIds = Team.List.SelectMany(t => t.Roles).Select(r => r.Id).ToHashSet();
+                        HashSet<uint> usedRoleIds = Team.List.SelectMany(t => t.TeamRoles).Select(r => r.RoleNumericalId).ToHashSet();
 
-                        foreach (var role in team.Roles)
+                        IEnumerable<UncomplicatedCustomRole> teamRoles = team.Roles;
+
+                        foreach (var role in teamRoles)
                         {
-                            if (usedRoleIds.Contains(role.Id))
+                            if (usedRoleIds.Contains(role.RoleNumericalId))
                             {
-                                int originalRoleId = role.Id;
-                                int newRoleId = 1;
+                                uint originalRoleId = role.RoleNumericalId;
+                                uint newRoleId = 1;
                                 while (usedRoleIds.Contains(newRoleId))
                                     newRoleId++;
 
@@ -154,12 +157,26 @@ namespace UncomplicatedCustomTeams.Utilities
                                 ErrorManager.Add(file, warning, suggestion: suggestion);
                                 LogManager.Warn($"{warning}\n{suggestion}");
 
-                                role.Id = newRoleId;
+                                role.Id = (int)newRoleId;
                                 usedRoleIds.Add(newRoleId);
                             }
                             else
                             {
-                                usedRoleIds.Add(role.Id);
+                                usedRoleIds.Add(role.RoleNumericalId);
+                            }
+                        }
+
+                        IEnumerable<ExiledCustomRole> exiledTeamroles = team.ExiledRoles;
+
+                        foreach (var role in exiledTeamroles)
+                        {
+                            if (role.BaseCustomRole is null)
+                            {
+                                team.TeamRoles.Remove(role);
+                                string warning = $"Exiled Custom Role with ID {role.ExiledId} not registered! Removed from team.";
+                                string suggestion = "Ensure that this Exiled Custom Role is correctly registered by its plugin.";
+                                ErrorManager.Add(file, warning, suggestion: suggestion);
+                                LogManager.Warn($"{warning}\n{suggestion}");
                             }
                         }
                         LogManager.Debug($"Proposed to the registerer the external team '{team.Name}' (ID: {team.Id}) from file: {file}");

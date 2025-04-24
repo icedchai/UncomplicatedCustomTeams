@@ -51,7 +51,7 @@ namespace UncomplicatedCustomTeams.Commands
                 return false;
             }
 
-            CustomRole role = team.Roles.FirstOrDefault(r => r.Id == roleId);
+            IUCTCustomRole role = team.TeamRoles.FirstOrDefault(r => r.RoleNumericalId == roleId);
             if (role == null)
             {
                 response = $"Role with ID {roleId} not found in team {team.Name}.";
@@ -66,7 +66,7 @@ namespace UncomplicatedCustomTeams.Commands
             summonedRole.AddRole();
             role.MaxPlayers = originalMax;
 
-            response = $"Successfully respawned {player.Nickname} as role ID {role.Id} in team {team.Name}.";
+            response = $"Successfully respawned {player.Nickname} as role ID {role.RoleNumericalId} in team {team.Name}.";
             return true;
         }
 
