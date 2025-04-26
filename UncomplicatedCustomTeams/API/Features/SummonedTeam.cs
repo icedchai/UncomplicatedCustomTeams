@@ -161,6 +161,7 @@ namespace UncomplicatedCustomTeams.API.Features
             {
                 foreach (IUCTCustomRole role in team.TeamRoles.OrderBy(r => r.Priority))
                 {
+                    Log.Info($"{SummonedTeam.SummonedPlayersCount(role)} {role.Name}s");
                     if (SummonedTeam.SummonedPlayersCount(role) < role.MaxPlayers)
                     {
                         SummonedTeam.Players.Add(new(SummonedTeam, Player, role));
@@ -168,6 +169,10 @@ namespace UncomplicatedCustomTeams.API.Features
                         break;
                     }
                 }
+            }
+            foreach (var item in SummonedTeam.Players)
+            {
+                Log.Info($"{item.Player.Nickname}: {item.CustomRole.Name} ({item.CustomRole.RoleNumericalId})");
             }
             if (!string.IsNullOrEmpty(team.CassieTranslation))
             {

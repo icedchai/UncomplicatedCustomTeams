@@ -16,6 +16,7 @@ namespace UncomplicatedCustomTeams.Interfaces
         /// <summary>
         /// Gets the ID of this role.
         /// </summary>
+        [YamlIgnore]
         public uint RoleNumericalId { get; }
 
         /// <summary>

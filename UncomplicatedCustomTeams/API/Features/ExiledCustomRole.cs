@@ -42,7 +42,7 @@ namespace UncomplicatedCustomTeams.API.Features
         public uint ExiledId { get; set; }
 
         [YamlIgnore]
-        public uint RoleNumericalId => BaseCustomRole.Id;
+        public uint RoleNumericalId => ExiledId;
 
         public void Spawn(Player player)
         {

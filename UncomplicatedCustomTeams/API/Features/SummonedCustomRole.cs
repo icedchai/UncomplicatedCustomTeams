@@ -1,5 +1,6 @@
 ﻿using Exiled.API.Extensions;
 using Exiled.API.Features;
+using Exiled.Events.EventArgs.Player;
 using MEC;
 using PlayerRoles;
 using UncomplicatedCustomRoles.Extensions;
@@ -80,6 +81,7 @@ namespace UncomplicatedCustomTeams.API.Features
                         break;
                 }
             }
+
             CustomRole.Spawn(Player);
             Timing.CallDelayed(0.1f, () => Player.Position = spawnPos);
             IsRoleSet = true;
